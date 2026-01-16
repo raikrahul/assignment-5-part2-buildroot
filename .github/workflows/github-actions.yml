@@ -11,17 +11,17 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 120
         steps:
-          - uses: actions/checkout@v2
+          - uses: actions/checkout@v4
           - name: Checkout submodules
             run: git submodule update --init --recursive
           - name: Cache Buildroot downloads
-            uses: actions/cache@v2
+            uses: actions/cache@v4
             with:
               path: ~/.dl
               key: ${{ runner.os }}-buildroot-dl
               restore-keys: |
                 ${{ runner.os }}-buildroot-dl-
-          - uses: webfactory/ssh-agent@v0.5.3
+          - uses: webfactory/ssh-agent@v0.9.1
             with:
                 ssh-private-key: ${{ secrets.SSHKEY }}
           - name: Run full test
