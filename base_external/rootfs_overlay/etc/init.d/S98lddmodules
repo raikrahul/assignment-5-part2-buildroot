@@ -1,0 +1,33 @@
+#!/bin/sh
+case "$1" in
+  start)
+      echo "Loading ldd modules"
+      modprobe scull
+      modprobe faulty
+      modprobe hello
+
+      # Create /dev/scull* nodes
+      scull_major=$(awk "\$2==\"scull\" {print \$1}" /proc/devices)
+      mknod /dev/scull0 c $scull_major 0
+      mknod /dev/scull1 c $scull_major 1
+      mknod /dev/scull2 c $scull_major 2
+      mknod /dev/scull3 c $scull_major 3
+      
+      # Create /dev/faulty node
+      faulty_major=$(awk "\$2==\"faulty\" {print \$1}" /proc/devices)
+      mknod /dev/faulty c $faulty_major 0
+      ;;
+  stop)
+      echo "Unloading ldd modules"
+      rmmod hello
+      rmmod faulty
+      rmmod scull
+      rm -f /dev/scull*
+      rm -f /dev/faulty
+      ;;
+  *)
+      echo "Usage: $0 {start|stop}"
+      exit 1
+esac
+
+exit 0
